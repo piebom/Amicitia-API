@@ -65,19 +65,28 @@ router.post("/login",
           if (!isPasswordCorrect) {
             ctx.throw(400, "Login failed");
           }
-
-          const buffer = await crypto.randomBytes(32);
-          const token = buffer.toString("hex");
-          const user_id = user.id;
-          const created_at =new Date((new Date()).toISOString().slice(0, 19).replace('T', ' '));
-          const result = await prisma.accesstoken.create({
-            data: {
-              user_id,
-              token,
-              created_at
-            },
-          });
-          ctx.response.body = { access_token: token };
+          const usertoken = await prisma.accesstoken
+          .findUnique({
+              where: {
+                  user_id: user.id,
+              },
+          })
+          if (!usertoken.token) {
+            const buffer = await crypto.randomBytes(32);
+            const token = buffer.toString("hex");
+            const user_id = user.id;
+            const created_at =new Date((new Date()).toISOString().slice(0, 19).replace('T', ' '));
+            const result = await prisma.accesstoken.create({
+              data: {
+                user_id,
+                token,
+                created_at
+              },
+            });
+            ctx.response.body = { access_token: token };
+          }else{
+            ctx.response.body = { access_token: usertoken.token };
+          }
     }
 )
 

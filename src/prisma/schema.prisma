@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:Kaas1212@localhost:3306/webservices"
+  url      = env("DATABASE_URL")
 }
 
 model user {

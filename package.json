@@ -6,7 +6,22 @@
   "author": "Pieter Bommele <pieter.bommele@student.hogent.be>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "npx env-cmd nodemon"
+  },
+  "nodemonConfig": {
+    "signal": "SIGTERM",
+    "ignore": [
+      "node_modules/*",
+      ".vscode/*"
+    ],
+    "delay": "80",
+    "watch": [
+      "config",
+      "src"
+    ],
+    "ext": "js,json",
+    "legacyWatch": true,
+    "exec": "node --inspect=0.0.0.0:9001 --trace-warnings src/index.js"
   },
   "dependencies": {
     "@koa/router": "^10.1.1",
