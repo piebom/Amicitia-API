@@ -17,20 +17,26 @@ router.post("/register",
                     .lowercase()
                     .email()
                     .required(),
-                password: Joi.string().required()
+                password: Joi.string().required(),
+                confirmation: Joi.string().required()
             }
         }   
     },
     async ctx => {
-        const password = await bcrypt.hash(ctx.request.body.password, 10);
-        const email = ctx.request.body.email;
-        const result = await prisma.user.create({
-            data: {
-              email,
-              password,
-            },
-          });
-        ctx.response.body = { route: "/auth/register", params: ctx.request.body };
+        if(ctx.request.body.password == ctx.request.body.confirmation){
+            const password = await bcrypt.hash(ctx.request.body.password, 10);
+            const email = ctx.request.body.email;
+            const result = await prisma.user.create({
+                data: {
+                  email,
+                  password,
+                },
+              });
+            ctx.response.body = { route: "/auth/register", params: ctx.request.body };
+        }
+        else{
+            ctx.throw(400, "Passwords don't match");
+        }
     }
 );
 
@@ -71,7 +77,7 @@ router.post("/login",
                   user_id: user.id,
               },
           })
-          if (!usertoken.token) {
+          if (usertoken == null) {
             const buffer = await crypto.randomBytes(32);
             const token = buffer.toString("hex");
             const user_id = user.id;
