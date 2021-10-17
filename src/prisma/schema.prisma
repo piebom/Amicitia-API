@@ -18,11 +18,12 @@ model accesstoken {
 }
 
 model activity {
-  id          Int        @id @default(autoincrement())
-  name        String     @db.VarChar(255)
-  description String     @db.VarChar(255)
-  persons     Int
-  favorite    favorite[]
+  id            Int        @id @default(autoincrement())
+  activity      String     @db.VarChar(255)
+  type          String     @db.VarChar(255)
+  participants  Int
+  accessibility Float
+  favorite      favorite[]
 }
 
 model favorite {

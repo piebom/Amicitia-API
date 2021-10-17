@@ -16,4 +16,35 @@ router.get(
     }
 );
 
+router.post("/api/activities",
+    {
+        validate: {
+            type: "json",
+            body: {
+                activity: Joi.string()
+                    .required(),
+                type: Joi.string().required(),
+                participants: Joi.number().required(),
+                accessibility: Joi.number().required()
+            }
+        }   
+    },
+    async ctx => {
+            const activity = ctx.request.body.activity;
+            const type = ctx.request.body.type;
+            const participants = ctx.request.body.participants;
+            const accessibility = ctx.request.body.accessibility;
+            const result = await prisma.activity.create({
+                data: {
+                  activity,
+                  type,
+                  participants,
+                  accessibility
+                },
+              });
+            const activities = await prisma.activity.findMany()
+            ctx.response.body = { activities };
+    }
+);
+
 module.exports = router;
