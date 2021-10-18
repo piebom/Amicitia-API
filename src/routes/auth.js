@@ -91,7 +91,7 @@ router.post("/login",
             });
             ctx.response.body = { access_token: token };
           }else{
-            ctx.response.body = { access_token: usertoken.token };
+            ctx.response.body = { access_token: usertoken.token,user: user };
           }
     }
 )

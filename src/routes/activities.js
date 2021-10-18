@@ -30,6 +30,9 @@ router.post("/api/activities",
         }   
     },
     async ctx => {
+        if (!ctx.state.userAuthenticated){
+            ctx.throw("403", "User authentication required");
+        }
             const activity = ctx.request.body.activity;
             const type = ctx.request.body.type;
             const participants = ctx.request.body.participants;

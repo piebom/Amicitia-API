@@ -4,6 +4,7 @@ const {getLogger} = require('./core/logging');
 const bodyParser = require('koa-bodyparser');
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const favoriteRoutes = require("./routes/favorites")
 const activitiesRoutes = require("./routes/activities");
 const tokenAuthMiddleware = require("./middlewares/tokenAuth");
 const CORS_MAX_AGE = config.get('cors.maxAge');
@@ -19,8 +20,9 @@ app
 		maxAge: CORS_MAX_AGE,
 	}
 	))
-	.use(authRoutes.middleware())
 	.use(tokenAuthMiddleware)
+	.use(authRoutes.middleware())
+	.use(favoriteRoutes.middleware())
 	.use(activitiesRoutes.middleware())
 	.use(userRoutes.middleware());
 

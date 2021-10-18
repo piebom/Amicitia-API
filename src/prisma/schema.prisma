@@ -29,7 +29,7 @@ model activity {
 model favorite {
   user_id     Int
   activity_id Int
-  favoritecol Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   activity    activity @relation(fields: [activity_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoriteActivityID")
   user        user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoriteUserID")
 
