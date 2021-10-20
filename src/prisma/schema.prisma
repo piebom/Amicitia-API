@@ -8,13 +8,13 @@ datasource db {
 }
 
 model accesstoken {
-  token         String   @unique(map: "token_UNIQUE") @db.Char(64)
+  accessrokenID Int      @id @default(autoincrement())
+  token         String   @unique(map: "token_UNIQUE") @db.VarChar(255)
   user_id       Int      @unique(map: "user_id_UNIQUE")
   created_at    DateTime @db.DateTime(0)
-  accesstokenID Int      @id @default(autoincrement())
-  user          user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "User_ID")
+  user          user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "userid")
 
-  @@index([user_id], map: "User_ID_idx")
+  @@index([user_id], map: "userid_idx")
 }
 
 model activity {
@@ -22,25 +22,30 @@ model activity {
   activity      String     @db.VarChar(255)
   type          String     @db.VarChar(255)
   participants  Int
-  accessibility Float
+  accessibility Float      @db.Float
+  createdby     Int?
+  user          user?      @relation(fields: [createdby], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "createdby")
   favorite      favorite[]
+
+  @@index([createdby], map: "createdbyID_idx")
 }
 
 model favorite {
+  id          Int      @id @default(autoincrement())
   user_id     Int
   activity_id Int
-  id          Int      @id @default(autoincrement())
-  activity    activity @relation(fields: [activity_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoriteActivityID")
-  user        user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoriteUserID")
+  activity    activity @relation(fields: [activity_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "activityidkey")
+  user        user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "useridkey")
 
-  @@index([activity_id], map: "favoriteActivityID_idx")
-  @@index([user_id], map: "favoriteUserID_idx")
+  @@index([activity_id], map: "activityid_idx")
+  @@index([user_id], map: "userid_idx")
 }
 
 model user {
   id          Int          @id @default(autoincrement())
-  email       String       @unique(map: "email") @db.VarChar(255)
+  email       String       @unique(map: "email_UNIQUE") @db.VarChar(255)
   password    String       @db.Char(60)
   accesstoken accesstoken?
+  activity    activity[]
   favorite    favorite[]
 }
