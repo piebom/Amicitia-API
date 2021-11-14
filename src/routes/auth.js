@@ -25,17 +25,27 @@ router.post("/register",
     async ctx => {
         if(ctx.request.body.password == ctx.request.body.confirmation){
             const password = await bcrypt.hash(ctx.request.body.password, 10);
-            const email = ctx.request.body.email;
-            const result = await prisma.user.create({
-                data: {
-                  email,
-                  password,
-                },
-              });
-            ctx.response.body = { route: "/auth/register", params: ctx.request.body };
+            const useremail = ctx.request.body.email;
+            const user = prisma.user.findUnique({
+                where: {
+                    email: useremail,
+                }
+            })
+            if (user == null){
+                const result = await prisma.user.create({
+                    data: {
+                      useremail,
+                      password,
+                    },
+                  });
+                ctx.response.body = { route: "/auth/register", params: ctx.request.body };
+            }
+            else{
+                ctx.throw(400, "Email is already in use.");
+            }
         }
         else{
-            ctx.throw(400, "Passwords don't match");
+            ctx.throw(400, "Passwords don't match.");
         }
     }
 );

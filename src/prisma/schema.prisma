@@ -41,6 +41,14 @@ model favorite {
   @@index([user_id], map: "userid_idx")
 }
 
+model resettoken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @db.VarChar(255)
+  createdAt DateTime @db.Date
+  user      user     @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "useridresettoken")
+}
+
 model user {
   id          Int          @id @default(autoincrement())
   email       String       @unique(map: "email_UNIQUE") @db.VarChar(255)
@@ -48,4 +56,5 @@ model user {
   accesstoken accesstoken?
   activity    activity[]
   favorite    favorite[]
+  resettoken  resettoken?
 }

@@ -49,7 +49,7 @@ router.post("/api/activities",
             const type = ctx.request.body.type;
             const participants = ctx.request.body.participants;
             const accessibility = ctx.request.body.accessibility;
-            const createdby = null;
+            var createdby = null;
             if (ctx.request.body.createdby){
                 createdby = ctx.request.body.createdby;
             }

@@ -4,8 +4,9 @@ const {getLogger} = require('./core/logging');
 const bodyParser = require('koa-bodyparser');
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
-const favoriteRoutes = require("./routes/favorites")
+const favoriteRoutes = require("./routes/favorites");
 const activitiesRoutes = require("./routes/activities");
+const resettokenRoutes = require("./routes/resettoken")
 const tokenAuthMiddleware = require("./middlewares/tokenAuth");
 const CORS_MAX_AGE = config.get('cors.maxAge');
 const Koa = require('koa');
@@ -24,7 +25,8 @@ app
 	.use(authRoutes.middleware())
 	.use(favoriteRoutes.middleware())
 	.use(activitiesRoutes.middleware())
-	.use(userRoutes.middleware());
+	.use(userRoutes.middleware())
+	.use(resettokenRoutes.middleware());
 
 app.listen(3001);
 
