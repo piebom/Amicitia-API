@@ -1,12 +1,21 @@
 const JoiRouter = require("koa-joi-router");
 const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 const Joi = JoiRouter.Joi;
 const router = new JoiRouter();
 const {PrismaClient} = require('@prisma/client');
 const nodemailer = require("nodemailer");
 const prisma = new PrismaClient();
 router.prefix("/api");
-router.get('/reset',
+router.post('/check',
+{
+  validate: {
+      type: "json",
+      body: {
+          token: Joi.string().required(),
+      }
+  }   
+},
 async ctx => {
     const token = await prisma.resettoken.findFirst({
         where: {
@@ -22,6 +31,53 @@ async ctx => {
     }
 }
 )
+router.post('/change',
+{
+  validate: {
+      type: "json",
+      body: {
+          token: Joi.string().required(),
+          password: Joi.string().required()
+      }
+  },
+output: {
+  200: {
+    body: {
+      userId: Joi.string(),
+      name: Joi.string()
+    }
+  }
+},
+},
+async ctx => {
+  const token = await prisma.resettoken.findFirst({
+    where: {
+      token: ctx.request.body.token
+    }
+  })
+  if(token != null){
+      const updateUser = await prisma.user.update({
+        where:{
+          id: token.userId
+        },
+        data: {
+          password: await bcrypt.hash(ctx.request.body.password, 10),
+        }
+      })
+      let rtoken = await prisma.resettoken.findMany({where:{
+        userId: updateUser.id
+      }})
+      if (rtoken.length > 0){
+        const deletetoken = await prisma.resettoken.deleteMany({
+          where:{
+            id: rtoken.id
+        }});
+      }
+      ctx.body = updateUser
+  }else{
+    ctx.throw(400, "No user with token found");
+  }
+});
 router.post("/reset",
     {
         validate: {
