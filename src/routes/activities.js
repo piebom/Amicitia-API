@@ -1,13 +1,19 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 const Router = require('@koa/router');
-
+const auth = require("../middlewares/tokenAuth");
 const getAllActivities = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
     const activities = await prisma.activity.findMany();
     ctx.body = activities
 }
 
 const getActivityWithFavorite = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
     const activities = await prisma.activity.findMany();
     const favoritesFromUser = await prisma.favorite.findMany({
         where: {
@@ -26,6 +32,9 @@ const getActivityWithFavorite = async (ctx) => {
 }
 
 const createActivity = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
     const newActivity = await prisma.activity.create({
         data: {
             ...ctx.request.body,
@@ -34,14 +43,26 @@ const createActivity = async (ctx) => {
     ctx.body = newActivity;
     ctx.status=201;
 }
-
+const count = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
+    const activities = await prisma.activity.findMany({
+        where: {
+            createdby: parseInt(ctx.params.id)
+        }
+    });
+    ctx.body = activities.length;
+}
 module.exports = function installActivityRoutes(app){
     const router = new Router({
         prefix: "/activities"
     });
-    router.get('/', getAllActivities);
-    router.get('/:id', getActivityWithFavorite);
-    router.post('/',createActivity);
+    
+    router.get('/',auth, getAllActivities);
+    router.get('/:id',auth, getActivityWithFavorite);
+    router.get('/count/:id',auth, count);
+    router.post('/',auth,createActivity);
 
 	app.use(router.routes()).use(router.allowedMethods());
 }

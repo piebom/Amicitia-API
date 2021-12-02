@@ -3,20 +3,29 @@ const prisma = new PrismaClient();
 const Router = require('@koa/router');
 
 const getAllFavorites = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
     const favorites = await prisma.favorite.findMany();
     ctx.body = favorites
 }
 
 const getFavoriteByID = async (ctx) => {
-  const favorite = await prisma.favorite.findMany({
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
+    const favorite = await prisma.favorite.findMany({
     where: {
         user_id: parseInt(ctx.request.params.id)
     }
-})
-ctx.body = favorite
+    })
+    ctx.body = favorite
 }
 
 const deleteFavorite = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
   await prisma.favorite.findMany({
     where: {
         user_id: parseInt(ctx.request.params.user_id),
@@ -32,6 +41,9 @@ const deleteFavorite = async (ctx) => {
 }
 
 const createFavorite = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
     const newFavorite = await prisma.favorite.create({
         data: {
             ...ctx.request.body,

@@ -13,7 +13,8 @@
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'"
   },
   "prisma": {
-    "seed": "ts-node ./src/prisma/seed.ts"
+    "seed": "ts-node ./src/prisma/seed.ts",
+    "schema": "./src/prisma/schema.prisma"
   },
   "nodemonConfig": {
     "signal": "SIGTERM",
@@ -49,6 +50,9 @@
     "koa": "^2.13.3",
     "koa-bodyparser": "^4.3.0",
     "koa-joi-router": "^8.0.0",
+    "koa-jwt": "^4.0.3",
+    "koa-passport": "^4.0.1",
+    "koa-session": "^6.2.0",
     "lodash": "^4.17.21",
     "mongoose": "^6.0.13",
     "mysql2": "^2.3.0",
@@ -61,6 +65,7 @@
     "pino-pretty": "^7.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "supertest": "^6.1.6",
     "winston": "^3.3.3",
     "zod": "^3.11.6"
   },

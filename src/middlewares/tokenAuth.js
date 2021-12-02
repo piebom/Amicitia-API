@@ -11,19 +11,19 @@ async function checkAuth(ctx, next) {
           'Invalid authorization Header. Should start with "Bearer"'
         );
       }
-      const tokenn = authorizationHeader.substring(7, authorizationHeader.length); //Retrieve the token from the "Bearer {token}" format
-      const accessToken = await prisma.accesstoken
+      const token = authorizationHeader.substring(7, authorizationHeader.length); //Retrieve the token from the "Bearer {token}" format
+      const user = await prisma.user
       .findUnique({
           where: {
-              token: tokenn,
+              token: token,
           },
       })
-      if (!accessToken) {
+      if (!user) {
         ctx.throw(400, "Invalid access token");
       }
       // Update the Koa context
       ctx.state.userAuthenticated = true;
-      ctx.state.user = accessToken.user;
+      ctx.state.user = user;
     }
     return next();
   }
