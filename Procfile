@@ -1,1 +1,1 @@
-worker: node src/createServer.js
+worker: node src/index.js
