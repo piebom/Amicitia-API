@@ -6,7 +6,7 @@
   "license": "MIT",
   "source": "server.js",
   "scripts": {
-    "start": "npx env-cmd nodemon",
+    "start": "npx nodemon",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "test": "jest",
     "test:coverage": "yarn test --coverage",
