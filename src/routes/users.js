@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 
 const loginUser = async (ctx) => {
+    const TOKEN_KEY="ccee31ac26c0c8437b0ead8c5db6df2b726cec976b828297f61594c4939ca3fb7ffa9c5d03fec458626df6f75cc93fc6f5e30e930c1ec38b70a0dcb7"
     try{
         const email = ctx.request.body.email;
         const password = ctx.request.body.password;
@@ -22,7 +23,7 @@ const loginUser = async (ctx) => {
         if (user && (await bcrypt.compare(password, user.password))){
             const token = jwt.sign(
                 { user_id: user.id, email },
-                process.env.TOKEN_KEY
+                TOKEN_KEY
             );
             await prisma.user.update({
                 where: {
@@ -71,7 +72,7 @@ const registerUser = async (ctx) => {
 
         const token = jwt.sign(
             { user_id: user.id, email},
-            process.env.TOKEN_KEY,
+            TOKEN_KEY,
             {
                 expiresIn: "2h",
             }
