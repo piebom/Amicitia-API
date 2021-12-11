@@ -26,7 +26,7 @@ const deleteFavorite = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-  await prisma.favorite.findMany({
+  const favorite = await prisma.favorite.findMany({
     where: {
         user_id: parseInt(ctx.request.params.user_id),
         activity_id: parseInt(ctx.request.params.activity_id)

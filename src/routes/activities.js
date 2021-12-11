@@ -2,11 +2,33 @@ const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 const Router = require('@koa/router');
 const auth = require("../middlewares/tokenAuth");
-const getAllActivities = async (ctx) => {
+
+const getActivityPage = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-    const activities = await prisma.activity.findMany();
+    const page = parseInt(ctx.query.page)
+    const limit = parseInt(ctx.query.limit)
+
+    const startIndex = (page - 1) * limit
+
+    const results = await prisma.activity.findMany({
+        skip: startIndex,
+        take: limit,
+      })
+      ctx.body = results
+}
+
+
+const getCreatedActivities = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
+    const activities = await prisma.activity.findMany({
+        where: {
+            createdby: parseInt(ctx.params.id)
+        }
+    });
     ctx.body = activities
 }
 
@@ -14,7 +36,15 @@ const getActivityWithFavorite = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-    const activities = await prisma.activity.findMany();
+    const page = parseInt(ctx.query.page)
+    const limit = parseInt(ctx.query.limit)
+
+    const startIndex = (page - 1) * limit
+    const count = Math.ceil((await prisma.activity.findMany()).length / limit)
+    const activities = await prisma.activity.findMany({
+        skip: startIndex,
+        take: limit,
+      })
     const favoritesFromUser = await prisma.favorite.findMany({
         where: {
             user_id: parseInt(ctx.params.id),
@@ -28,7 +58,17 @@ const getActivityWithFavorite = async (ctx) => {
         favorites.push(obj.activity_id);
     });
     activities.forEach((item) => favorites.includes(item.id)? item["isFavorite"] = true : item["isFavorite"] = false)
-    ctx.body = activities;
+    ctx.body = {count,activities};
+    return activities
+}
+
+const getFavoriteActivities = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
+    const activities = getActivityWithFavorite
+    const favorites = activities.filter(activity => activity.isFavorite == true);
+    ctx.body = favorites;
 }
 
 const createActivity = async (ctx) => {
@@ -59,10 +99,11 @@ module.exports = function installActivityRoutes(app){
         prefix: "/activities"
     });
     
-    router.get('/',auth, getAllActivities);
+    router.get('/',auth, getActivityPage);
+    router.get('/getFavorites/:id',auth, getFavoriteActivities);
+    router.get('/created/:id',auth, getCreatedActivities);
     router.get('/:id',auth, getActivityWithFavorite);
     router.get('/count/:id',auth, count);
     router.post('/',auth,createActivity);
-
 	app.use(router.routes()).use(router.allowedMethods());
 }

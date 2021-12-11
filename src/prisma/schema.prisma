@@ -5,17 +5,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
-model accesstoken {
-  accessrokenID Int      @id @default(autoincrement())
-  token         String   @unique(map: "token_UNIQUE") @db.VarChar(255)
-  user_id       Int      @unique(map: "user_id_UNIQUE")
-  created_at    DateTime @db.DateTime(0)
-  user          user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "userid")
-
-  @@index([user_id], map: "userid_idx")
+  url      = "mysql://5zf04oaq0kik:pscale_pw_9o5AHOZiyGgsbtLbQ4iL7I0uUgKI3juSJuRC8FUywF4@fbxco9m73fkp.eu-west-3.psdb.cloud/activityjournal?sslaccept=strict"
 }
 
 model activity {
@@ -25,21 +15,12 @@ model activity {
   participants  Int
   accessibility Float      @db.Float
   createdby     Int?
-  user          user?      @relation(fields: [createdby], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "createdby")
-  favorite      favorite[]
-
-  @@index([createdby], map: "createdbyID_idx")
 }
 
 model favorite {
   id          Int      @id @default(autoincrement())
   user_id     Int
   activity_id Int
-  activity    activity @relation(fields: [activity_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "activityidkey")
-  user        user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "useridkey")
-
-  @@index([activity_id], map: "activityid_idx")
-  @@index([user_id], map: "userid_idx")
 }
 
 model resettoken {
@@ -55,7 +36,4 @@ model user {
   password    String       @db.Char(60)
   username    String       @db.VarChar(255)
   token       String?      @unique(map: "token_UNIQUE") @db.Char(255)
-  accesstoken accesstoken?
-  activity    activity[]
-  favorite    favorite[]
 }
