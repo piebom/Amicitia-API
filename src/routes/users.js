@@ -9,7 +9,6 @@ const loginUser = async (ctx) => {
     try{
         const email = ctx.request.body.email;
         const password = ctx.request.body.password;
-        console.log(ctx.request.body)
         if(!(email && password)){
             ctx.throw(400,"All input is required");
         }
