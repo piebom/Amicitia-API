@@ -9,7 +9,6 @@ const CORS_ORIGINS = ['*'];
 const CORS_MAX_AGE = 3 * 60 * 60;
 const LOG_LEVEL = 'silly';
 const LOG_DISABLED = false;
-const PORT = 80;
 const tokenAuthMiddleware = require("./middlewares/tokenAuth");
 module.exports = async function createServer (){
   const app = new Koa();
@@ -26,7 +25,7 @@ module.exports = async function createServer (){
     },
     start(){
       return new Promise((resolve) => {
-        app.listen(PORT);
+        app.listen(process.env.PORT || 5000);
         logger.info(`🚀 Server listening on http://localhost:3001`)
         resolve()
       })
