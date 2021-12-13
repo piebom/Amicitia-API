@@ -58,6 +58,8 @@ const registerUser = async (ctx) => {
 
         if (oldUser) {
             ctx.throw(409, "User already exist. Please Login.")
+            ctx.status(409);
+            ctx.body = "User already exist. Please Login."
         }
 
         encryptPassword = await bcrypt.hash(password, 10);
