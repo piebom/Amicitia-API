@@ -45,6 +45,7 @@ const loginUser = async (ctx) => {
 }
 
 const registerUser = async (ctx) => {
+    const TOKEN_KEY="ccee31ac26c0c8437b0ead8c5db6df2b726cec976b828297f61594c4939ca3fb7ffa9c5d03fec458626df6f75cc93fc6f5e30e930c1ec38b70a0dcb7"
     try{
         const email = ctx.request.body.email;
         const username = ctx.request.body.username;
@@ -52,14 +53,13 @@ const registerUser = async (ctx) => {
 
         if (!(email && password && username)) {
             ctx.throw(400, "All input is required")
+            ctx.status(400)
         }
 
         const oldUser = await prisma.user.findUnique({where:{email:email}})
 
         if (oldUser) {
             ctx.throw(409, "User already exist. Please Login.")
-            ctx.status(409);
-            ctx.body = "User already exist. Please Login."
         }
 
         encryptPassword = await bcrypt.hash(password, 10);
