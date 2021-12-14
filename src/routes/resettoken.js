@@ -2,6 +2,7 @@ const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 const Router = require('@koa/router');
 const nodemailer = require("nodemailer");
+const crypto = require("crypto")
 
 const checkToken = async (ctx) => {
     if (!ctx.state.userAuthenticated){
