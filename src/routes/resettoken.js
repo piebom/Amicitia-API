@@ -11,10 +11,10 @@ const checkToken = async (ctx) => {
       }
     })
     if(token){
-      ctx.response.body = true
+      ctx.body = true
     }
     else{
-      ctx.response.body = false
+      ctx.body = false
     }
 }
 
