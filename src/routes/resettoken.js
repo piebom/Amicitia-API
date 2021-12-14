@@ -54,9 +54,6 @@ const changeToken = async (ctx) => {
 }
 }
 const resetToken = async (ctx) => {
-  if (!ctx.state.userAuthenticated){
-      ctx.throw("403", "User authentication required");
-  }
   const user = await prisma.user.findFirst({where:{
     email: ctx.request.body.email
   }});
