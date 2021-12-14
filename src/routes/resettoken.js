@@ -95,7 +95,6 @@ const resetToken = async (ctx) => {
     html: "<p>Hi,</p></br><P>You requested to reset your password.</p></br><p>Please, click the link below to reset your password.</p></br><a href='https://frontendweb-pieter-2122-pie-bomm.vercel.app/password-reset?token=" + String(token) + "'>Reset Password</a>", // html body
   });
   ctx.body=info
-  ctx.status(202)
 
 }
 
