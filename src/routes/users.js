@@ -58,6 +58,11 @@ const resetPassword = async (ctx) => {
             password: encryptPassword
         }
     })
+    await prisma.resettoken.delete({
+        where:{
+            id: resettoken.id
+        }
+    })
     ctx.body = user;
     return user;
 }
