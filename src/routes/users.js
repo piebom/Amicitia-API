@@ -44,13 +44,13 @@ const loginUser = async (ctx) => {
     }
 }
 const resetPassword = async (ctx) => {
-    const token = ctx.request.body.token;
+    const tokenn = ctx.request.body.token;
     const password = ctx.request.body.password;
     const resettoken = await prisma.resettoken.findFirst({where: {
-        token: token
+        token: tokenn
     }})
     encryptPassword = await bcrypt.hash(password, 10);
-    await prisma.user.update({
+    const user = await prisma.user.update({
         where:{
             id: resettoken.userId
         },
@@ -58,6 +58,8 @@ const resetPassword = async (ctx) => {
             password: encryptPassword
         }
     })
+    ctx.body = user;
+    return user;
 }
 const registerUser = async (ctx) => {
     const TOKEN_KEY="ccee31ac26c0c8437b0ead8c5db6df2b726cec976b828297f61594c4939ca3fb7ffa9c5d03fec458626df6f75cc93fc6f5e30e930c1ec38b70a0dcb7"
