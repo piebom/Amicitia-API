@@ -12,9 +12,11 @@ const checkToken = async (ctx) => {
     })
     if(token){
       ctx.body = true
+      return true;
     }
     else{
       ctx.body = false
+      return false;
     }
 }
 
