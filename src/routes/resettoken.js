@@ -92,7 +92,7 @@ const resetToken = async (ctx) => {
     to: "pbandere@gmail.com", // list of receivers
     subject: "Password Reset", // Subject line
     text: token, // plain text body
-    html: "<p>Hi,</p></br><P>You requested to reset your password.</p></br><p>Please, click the link below to reset your password.</p></br><a href='http://192.168.0.213:3000/password-reset?token=" + String(token) + "'>Reset Password</a>", // html body
+    html: "<p>Hi,</p></br><P>You requested to reset your password.</p></br><p>Please, click the link below to reset your password.</p></br><a href='https://frontendweb-pieter-2122-pie-bomm.vercel.app/password-reset?token=" + String(token) + "'>Reset Password</a>", // html body
   });
 
   console.log("Message sent: %s", info.messageId);

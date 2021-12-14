@@ -43,7 +43,22 @@ const loginUser = async (ctx) => {
         console.log(err);
     }
 }
-
+const resetPassword = async (ctx) => {
+    const token = ctx.request.body.token;
+    const password = ctx.request.body.password;
+    const resettoken = await prisma.resettoken.findFirst({where: {
+        token: token
+    }})
+    encryptPassword = await bcrypt.hash(password, 10);
+    await prisma.user.update({
+        where:{
+            id: resettoken.userId
+        },
+        data: {
+            password: encryptPassword
+        }
+    })
+}
 const registerUser = async (ctx) => {
     const TOKEN_KEY="ccee31ac26c0c8437b0ead8c5db6df2b726cec976b828297f61594c4939ca3fb7ffa9c5d03fec458626df6f75cc93fc6f5e30e930c1ec38b70a0dcb7"
     try{
@@ -100,5 +115,6 @@ module.exports = function installUserRoutes(app){
     });
     router.post('/register', registerUser);
     router.post('/login', loginUser);
+    router.post('/resetpassword',resetPassword)
 	app.use(router.routes()).use(router.allowedMethods());
 }
