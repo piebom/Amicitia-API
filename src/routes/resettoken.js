@@ -5,9 +5,6 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto")
 
 const checkToken = async (ctx) => {
-    if (!ctx.state.userAuthenticated){
-        ctx.throw("403", "User authentication required");
-    }
     const token = await prisma.resettoken.findFirst({
       where: {
           token: ctx.request.body.token
@@ -22,9 +19,6 @@ const checkToken = async (ctx) => {
 }
 
 const changeToken = async (ctx) => {
-  if (!ctx.state.userAuthenticated){
-      ctx.throw("403", "User authentication required");
-  }
   const token = await prisma.resettoken.findFirst({
     where: {
       token: ctx.request.body.token
