@@ -19,7 +19,6 @@ const getActivityPage = async (ctx) => {
       ctx.body = results
 }
 
-
 const getCreatedActivities = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
@@ -31,7 +30,27 @@ const getCreatedActivities = async (ctx) => {
     });
     ctx.body = activities
 }
-
+const getAllActivityWithFavorite = async (ctx) => {
+    if (!ctx.state.userAuthenticated){
+        ctx.throw("403", "User authentication required");
+    }
+    const activities = await prisma.activity.findMany()
+    const favoritesFromUser = await prisma.favorite.findMany({
+        where: {
+            user_id: parseInt(ctx.params.id),
+        },
+        select: {
+            activity_id: true,
+        }
+    });
+    var favorites = [];
+    favoritesFromUser.forEach(obj => {
+        favorites.push(obj.activity_id);
+    });
+    activities.forEach((item) => favorites.includes(item.id)? item["isFavorite"] = true : item["isFavorite"] = false)
+    ctx.body = {count,activities};
+    return activities
+}
 const getActivityWithFavorite = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
@@ -66,7 +85,7 @@ const getFavoriteActivities = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-    const activities = getActivityWithFavorite
+    const activities = [].concat(await getAllActivityWithFavorite(ctx));
     const favorites = activities.filter(activity => activity.isFavorite == true);
     ctx.body = favorites;
 }
