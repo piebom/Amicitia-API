@@ -1,6 +1,7 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const Router = require('@koa/router');
+const router = require('koa-joi-router')
+const Joi = router.Joi;
 
 const getAllFavorites = async (ctx) => {
     if (!ctx.state.userAuthenticated){
@@ -54,13 +55,12 @@ const createFavorite = async (ctx) => {
 }
 
 module.exports = function installFavoriteRoutes(app){
-    const router = new Router({
-        prefix: "/favorites"
-    });
-    router.get('/', getAllFavorites);
-    router.get('/:id', getFavoriteByID);
-    router.delete('/:user_id/:activity_id',deleteFavorite);
-    router.post('/',createFavorite);
+    const favorites = router();
+    favorites.prefix("/favorites");
+    favorites.get('/', getAllFavorites);
+    favorites.get('/:id', getFavoriteByID);
+    favorites.delete('/:user_id/:activity_id',deleteFavorite);
+    favorites.post('/',createFavorite);
 
-	app.use(router.routes()).use(router.allowedMethods());
+	app.use(favorites.middleware());
 }

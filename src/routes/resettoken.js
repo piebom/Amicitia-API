@@ -1,6 +1,7 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const Router = require('@koa/router');
+const router = require('koa-joi-router')
+const Joi = router.Joi;
 const nodemailer = require("nodemailer");
 const crypto = require("crypto")
 
@@ -20,36 +21,6 @@ const checkToken = async (ctx) => {
     }
 }
 
-const changeToken = async (ctx) => {
-  const token = await prisma.resettoken.findFirst({
-    where: {
-      token: ctx.request.body.token
-    }
-  })
-
-  if(token != null){
-    const updateUser = await prisma.user.update({
-      where:{
-        id: token.userId
-      },
-      data: {
-        password: await bcrypt.hash(ctx.request.body.password, 10),
-      }
-    })
-    let rtoken = await prisma.resettoken.findMany({where:{
-      userId: updateUser.id
-    }})
-    if (rtoken.length > 0){
-      const deletetoken = await prisma.resettoken.deleteMany({
-        where:{
-          id: rtoken.id
-      }});
-    }
-    ctx.body = updateUser
-}else{
-  ctx.throw(400, "No user with token found");
-}
-}
 const resetToken = async (ctx) => {
   const user = await prisma.user.findFirst({where:{
     email: ctx.request.body.email
@@ -95,11 +66,17 @@ const resetToken = async (ctx) => {
 }
 
 module.exports = function installFavoriteRoutes(app){
-    const router = new Router({
-        prefix: "/resettoken"
-    });
-    router.post('/check', checkToken);
-    router.post('/change',changeToken);
-    router.post('/reset',resetToken);
-	app.use(router.routes()).use(router.allowedMethods());
+    const resettoken = router();
+    resettoken.prefix("/resettoken");
+    resettoken.post('/check',{
+      validate: {
+        token: Joi.string().required()
+      }
+    },checkToken)
+    resettoken.post('/reset',{
+      validate: {
+        token: Joi.string().required()
+      }
+    }, resetToken)
+	app.use(resettoken.middleware());
 }

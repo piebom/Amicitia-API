@@ -1,6 +1,7 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const Router = require('@koa/router');
+const router = require('koa-joi-router')
+const Joi = router.Joi;
 const auth = require("../middlewares/tokenAuth");
 
 const getActivityPage = async (ctx) => {
@@ -114,15 +115,14 @@ const count = async (ctx) => {
     ctx.body = activities.length;
 }
 module.exports = function installActivityRoutes(app){
-    const router = new Router({
-        prefix: "/activities"
-    });
+    const activities = router();
+    activities.prefix("/activities");
     
-    router.get('/',auth, getActivityPage);
-    router.get('/getFavorites/:id',auth, getFavoriteActivities);
-    router.get('/created/:id',auth, getCreatedActivities);
-    router.get('/:id',auth, getActivityWithFavorite);
-    router.get('/count/:id',auth, count);
-    router.post('/',auth,createActivity);
-	app.use(router.routes()).use(router.allowedMethods());
+    activities.get('/',auth, getActivityPage);
+    activities.get('/getFavorites/:id',auth, getFavoriteActivities);
+    activities.get('/created/:id',auth, getCreatedActivities);
+    activities.get('/:id',auth, getActivityWithFavorite);
+    activities.get('/count/:id',auth, count);
+    activities.post('/',auth,createActivity);
+	app.use(activities.middleware());
 }

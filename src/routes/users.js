@@ -1,6 +1,7 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const Router = require('@koa/router');
+const router = require('koa-joi-router')
+const Joi = router.Joi;
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 
@@ -44,27 +45,34 @@ const loginUser = async (ctx) => {
     }
 }
 const resetPassword = async (ctx) => {
-    const tokenn = ctx.request.body.token;
-    const password = ctx.request.body.password;
-    const resettoken = await prisma.resettoken.findFirst({where: {
-        token: tokenn
-    }})
-    encryptPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.update({
-        where:{
-            id: resettoken.userId
-        },
-        data: {
-            password: encryptPassword
+    const token = await prisma.resettoken.findFirst({
+        where: {
+          token: ctx.request.body.token
         }
-    })
-    await prisma.resettoken.delete({
-        where:{
-            id: resettoken.id
+      })
+    
+      if(token != null){
+        const updateUser = await prisma.user.update({
+          where:{
+            id: token.userId
+          },
+          data: {
+            password: await bcrypt.hash(ctx.request.body.password, 10),
+          }
+        })
+        let rtoken = await prisma.resettoken.findMany({where:{
+          userId: updateUser.id
+        }})
+        if (rtoken.length > 0){
+          await prisma.resettoken.deleteMany({
+            where:{
+              id: rtoken.id
+          }});
         }
-    })
-    ctx.body = user;
-    return user;
+        ctx.body = updateUser
+      }else{
+      ctx.throw(400, "No user with token found");
+      }
 }
 const registerUser = async (ctx) => {
     const TOKEN_KEY="ccee31ac26c0c8437b0ead8c5db6df2b726cec976b828297f61594c4939ca3fb7ffa9c5d03fec458626df6f75cc93fc6f5e30e930c1ec38b70a0dcb7"
@@ -117,11 +125,26 @@ const registerUser = async (ctx) => {
 }
 
 module.exports = function installUserRoutes(app){
-    const router = new Router({
-        prefix: "/user"
-    });
-    router.post('/register', registerUser);
-    router.post('/login', loginUser);
-    router.post('/resetpassword',resetPassword)
-	app.use(router.routes()).use(router.allowedMethods());
+    const users = router();
+    users.prefix("/user");
+    users.post('/register',{
+        validate:{
+            email: Joi.string().required(),
+            password: Joi.string().required(),
+            username: Joi.string().required()
+        }
+    },registerUser)
+    users.post('/login',{
+        validate: {
+            email: Joi.string().required(),
+            password: Joi.string().required()
+        }
+    }, loginUser)
+    users.post('/resetpassword', {
+        validate: {
+            token: Joi.string().required(),
+            password: Joi.string().required()
+        }
+    }, resetPassword)
+	app.use(users.middleware());
 }
