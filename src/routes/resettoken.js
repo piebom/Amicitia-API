@@ -1,62 +1,27 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const Router = require('@koa/router');
+const router = require('koa-joi-router')
+const Joi = router.Joi;
 const nodemailer = require("nodemailer");
+const crypto = require("crypto")
 
 const checkToken = async (ctx) => {
-    if (!ctx.state.userAuthenticated){
-        ctx.throw("403", "User authentication required");
-    }
     const token = await prisma.resettoken.findFirst({
       where: {
           token: ctx.request.body.token
       }
     })
     if(token){
-      ctx.response.body = true
+      ctx.body = true
+      return true;
     }
     else{
-      ctx.response.body = false
+      ctx.body = false
+      return false;
     }
 }
 
-const changeToken = async (ctx) => {
-  if (!ctx.state.userAuthenticated){
-      ctx.throw("403", "User authentication required");
-  }
-  const token = await prisma.resettoken.findFirst({
-    where: {
-      token: ctx.request.body.token
-    }
-  })
-
-  if(token != null){
-    const updateUser = await prisma.user.update({
-      where:{
-        id: token.userId
-      },
-      data: {
-        password: await bcrypt.hash(ctx.request.body.password, 10),
-      }
-    })
-    let rtoken = await prisma.resettoken.findMany({where:{
-      userId: updateUser.id
-    }})
-    if (rtoken.length > 0){
-      const deletetoken = await prisma.resettoken.deleteMany({
-        where:{
-          id: rtoken.id
-      }});
-    }
-    ctx.body = updateUser
-}else{
-  ctx.throw(400, "No user with token found");
-}
-}
 const resetToken = async (ctx) => {
-  if (!ctx.state.userAuthenticated){
-      ctx.throw("403", "User authentication required");
-  }
   const user = await prisma.user.findFirst({where:{
     email: ctx.request.body.email
   }});
@@ -94,24 +59,24 @@ const resetToken = async (ctx) => {
     to: "pbandere@gmail.com", // list of receivers
     subject: "Password Reset", // Subject line
     text: token, // plain text body
-    html: "<p>Hi,</p></br><P>You requested to reset your password.</p></br><p>Please, click the link below to reset your password.</p></br><a href='http://192.168.0.213:3000/password-reset?token=" + String(token) + "'>Reset Password</a>", // html body
+    html: "<p>Hi,</p></br><P>You requested to reset your password.</p></br><p>Please, click the link below to reset your password.</p></br><a href='https://frontendweb-pieter-2122-pie-bomm.vercel.app/password-reset?token=" + String(token) + "'>Reset Password</a>", // html body
   });
-
-  console.log("Message sent: %s", info.messageId);
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-  // Preview only available when sending through an Ethereal account
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+  ctx.body=info
 
 }
 
 module.exports = function installFavoriteRoutes(app){
-    const router = new Router({
-        prefix: "/resettoken"
-    });
-    router.post('/check', checkToken);
-    router.post('/change',changeToken);
-    router.post('/reset',resetToken);
-	app.use(router.routes()).use(router.allowedMethods());
+    const resettoken = router();
+    resettoken.prefix("/resettoken");
+    resettoken.post('/check',{
+      validate: {
+        token: Joi.string().required()
+      }
+    },checkToken)
+    resettoken.post('/reset',{
+      validate: {
+        token: Joi.string().required()
+      }
+    }, resetToken)
+	app.use(resettoken.middleware());
 }

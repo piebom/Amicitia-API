@@ -54,6 +54,7 @@
     "koa-jwt": "^4.0.3",
     "koa-passport": "^4.0.1",
     "koa-session": "^6.2.0",
+    "koa-validate": "^1.0.7",
     "lodash": "^4.17.21",
     "mongoose": "^6.0.13",
     "mysql2": "^2.3.0",
@@ -67,6 +68,9 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "supertest": "^6.1.6",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-koa": "^2.1.0",
+    "swagger-ui-express": "^4.3.0",
     "winston": "^3.3.3",
     "zod": "^3.11.6"
   },
