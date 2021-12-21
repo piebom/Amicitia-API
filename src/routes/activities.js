@@ -13,6 +13,11 @@ const getActivityPage = async (ctx) => {
     const startIndex = (page - 1) * limit
 
     const results = await prisma.activity.findMany({
+        orderBy: [
+            {
+              id: 'desc'
+            }
+          ],
         skip: startIndex,
         take: limit,
       })
@@ -25,6 +30,11 @@ const getCreatedActivities = async (ctx) => {
         ctx.throw("403", "User authentication required");
     }
     const activities = await prisma.activity.findMany({
+        orderBy: [
+            {
+              id: 'desc'
+            }
+          ],
         where: {
             createdby: parseInt(ctx.params.id)
         }
@@ -42,10 +52,20 @@ const getActivityWithFavorite = async (ctx) => {
     const startIndex = (page - 1) * limit
     const count = Math.ceil((await prisma.activity.findMany()).length / limit)
     const activities = await prisma.activity.findMany({
+        orderBy: [
+            {
+              id: 'desc'
+            }
+          ],
         skip: startIndex,
         take: limit,
       })
     const favoritesFromUser = await prisma.favorite.findMany({
+        orderBy: [
+            {
+              id: 'desc'
+            }
+          ],
         where: {
             user_id: parseInt(ctx.params.id),
         },
