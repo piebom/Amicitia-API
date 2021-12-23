@@ -1,8 +1,8 @@
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
 const router = require('koa-joi-router')
 const Joi = router.Joi;
 const auth = require("../middlewares/tokenAuth");
+const activityService = require('../service/activity');
+const favoriteService = require('../service/favorite');
 
 const getActivityPage = async (ctx) => {
     if (!ctx.state.userAuthenticated){
@@ -11,39 +11,24 @@ const getActivityPage = async (ctx) => {
     const page = parseInt(ctx.query.page)
     const limit = parseInt(ctx.query.limit)
 
-    const startIndex = (page - 1) * limit
-
-    const results = await prisma.activity.findMany({
-        skip: startIndex,
-        take: limit,
-      })
-      ctx.body = results
+    const offset = (page - 1) * limit
+    const results = await activityService.getAll({limit,offset})
+    ctx.body = results
 }
 
 const getCreatedActivities = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-    const activities = await prisma.activity.findMany({
-        where: {
-            createdby: parseInt(ctx.params.id)
-        }
-    });
+    const activities = await activityService.getCreatedActivitiesByUserid(ctx.params.id)
     ctx.body = activities
 }
 const getAllActivityWithFavorite = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-    const activities = await prisma.activity.findMany()
-    const favoritesFromUser = await prisma.favorite.findMany({
-        where: {
-            user_id: parseInt(ctx.params.id),
-        },
-        select: {
-            activity_id: true,
-        }
-    });
+    const activities = await activityService.findAll()
+    const favoritesFromUser = await favoriteService.findFavoritesByUserID(ctx.params.id)
     var favorites = [];
     favoritesFromUser.forEach(obj => {
         favorites.push(obj.activity_id);
@@ -59,20 +44,10 @@ const getActivityWithFavorite = async (ctx) => {
     const page = parseInt(ctx.query.page)
     const limit = parseInt(ctx.query.limit)
 
-    const startIndex = (page - 1) * limit
-    const count = Math.ceil((await prisma.activity.findMany()).length / limit)
-    const activities = await prisma.activity.findMany({
-        skip: startIndex,
-        take: limit,
-      })
-    const favoritesFromUser = await prisma.favorite.findMany({
-        where: {
-            user_id: parseInt(ctx.params.id),
-        },
-        select: {
-            activity_id: true,
-        }
-    });
+    const offset = (page - 1) * limit
+    const count = Math.ceil((await activityService.findAll()).length / limit)
+    const activities = await activityService.getAll({limit,offset})
+    const favoritesFromUser = await favoriteService.findFavoritesByUserID(ctx.params.id)
     var favorites = [];
     favoritesFromUser.forEach(obj => {
         favorites.push(obj.activity_id);
@@ -95,11 +70,7 @@ const createActivity = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-    const newActivity = await prisma.activity.create({
-        data: {
-            ...ctx.request.body,
-        }
-    })
+    const newActivity = await activityService.create(ctx.request.body)
     ctx.body = newActivity;
     ctx.status=201;
 }
@@ -107,11 +78,7 @@ const count = async (ctx) => {
     if (!ctx.state.userAuthenticated){
         ctx.throw("403", "User authentication required");
     }
-    const activities = await prisma.activity.findMany({
-        where: {
-            createdby: parseInt(ctx.params.id)
-        }
-    });
+    const activities = await activityService.getCreatedActivitiesByUserid(ctx.params.id)
     ctx.body = activities.length;
 }
 module.exports = function installActivityRoutes(app){

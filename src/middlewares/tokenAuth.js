@@ -19,7 +19,7 @@ async function checkAuth(ctx, next) {
           },
       })
       if (!user) {
-        ctx.throw(400, "Invalid access token");
+         throw new Error("Not authenticated")
       }
       // Update the Koa context
       ctx.state.userAuthenticated = true;

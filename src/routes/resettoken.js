@@ -1,16 +1,12 @@
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
+const resettokenService = require('../service/resettoken');
+const userService = require('../service/user');
 const router = require('koa-joi-router')
 const Joi = router.Joi;
 const nodemailer = require("nodemailer");
 const crypto = require("crypto")
 
 const checkToken = async (ctx) => {
-    const token = await prisma.resettoken.findFirst({
-      where: {
-          token: ctx.request.body.token
-      }
-    })
+    const token = await resettokenService.findResetTokenByToken(ctx.request.body.token)
     if(token){
       ctx.body = true
       return true;
@@ -21,31 +17,37 @@ const checkToken = async (ctx) => {
     }
 }
 
+const resetPassword = async (ctx) => {
+  const token = await resettokenService.findResetTokenByToken(ctx.request.body.token)
+  
+    if(token != null){
+      const updateUser = await userService.updatePasswordByID(id,await bcrypt.hash(ctx.request.body.password, 10))
+
+      let rtoken = await resettokenService.findResetTokenByUserID(updateUser.id)
+      if (rtoken.length > 0){
+        resettokenService.deleteTokenByTokenID(rtoken.id)
+      }
+      ctx.body = updateUser
+    }else{
+    ctx.throw(400, "No user with token found");
+    }
+}
 const resetToken = async (ctx) => {
-  const user = await prisma.user.findFirst({where:{
-    email: ctx.request.body.email
-  }});
+  const user = await userService.getByEmail(ctx.request.body.email)
   if(!user){
     throw new Error("User does not exist");
   }
-  let rtoken = await prisma.resettoken.findMany({where:{
-    userId: user.id
-  }})
+  let rtoken = resettokenService.findResetTokenByUserID(user.id)
   if (rtoken.length > 0){
-    const deletetoken = await prisma.resettoken.deleteMany({
-      where:{
-        id: rtoken.id
-    }});
+    await resettokenService.deleteTokenByTokenID(rtoken.id)
   }
   let token = crypto.randomBytes(32).toString("hex");
   const userId = user.id;
   const createdAt =new Date((new Date()).toISOString().slice(0, 19).replace('T', ' '));
-  const result = await prisma.resettoken.createMany({
-    data: {
-      userId,
-      token,
-      createdAt
-    },
+  const result = await resettokenService.create({
+    userId,
+    token,
+    createdAt
   })
   var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -64,7 +66,6 @@ const resetToken = async (ctx) => {
   ctx.body=info
 
 }
-
 module.exports = function installFavoriteRoutes(app){
     const resettoken = router();
     resettoken.prefix("/resettoken");
@@ -78,5 +79,11 @@ module.exports = function installFavoriteRoutes(app){
         token: Joi.string().required()
       }
     }, resetToken)
+    resettoken.post('/resetpassword', {
+      validate: {
+          token: Joi.string().required(),
+          password: Joi.string().required()
+      }
+  }, resetPassword)
 	app.use(resettoken.middleware());
 }

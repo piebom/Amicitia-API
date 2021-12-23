@@ -1,7 +1,4 @@
 const createServer = require('./createServer');
-const { getLogger } = require('./core/logging');
-
-const logger = getLogger();
 
 async function main() {	
 	try {
@@ -15,7 +12,7 @@ async function main() {
 	  
 	}
 	catch (error){
-		logger.error(error);
+		console.log(error)
 		process.exit(-1);
 	}
 }
