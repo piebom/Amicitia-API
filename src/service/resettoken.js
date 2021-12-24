@@ -17,12 +17,12 @@ const findResetTokenByUserID = async (id) => {
 
 const deleteTokenByTokenID = async (id) => {
   debugLog('delete token by token id');
-  return resettokenRepository.findResetTokenByToken(id);
+  return resettokenRepository.deleteTokenByTokenID(id);
 }
 
 const create = async (data) => {
-  debugLog('create token');
-  return resettokenRepository.findResetTokenByToken(data);
+  debugLog('create token', {data});
+  return resettokenRepository.create(data);
 }
 module.exports = {
   findResetTokenByUserID,

@@ -13,6 +13,7 @@ const findById = async (id) => {
   })
 };
 const findByEmail = async (email) => {
+  console.log(email)
   return await prisma.user.findFirst({
     where: {
       email: email
