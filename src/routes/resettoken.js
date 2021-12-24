@@ -21,7 +21,7 @@ const resetPassword = async (ctx) => {
   const token = await resettokenService.findResetTokenByToken(ctx.request.body.token)
   
     if(token != null){
-      const updateUser = await userService.updatePasswordByID(id,await bcrypt.hash(ctx.request.body.password, 10))
+      const updateUser = await userService.updatePasswordByID(token.userId,await bcrypt.hash(ctx.request.body.password, 10))
 
       let rtoken = await resettokenService.findResetTokenByUserID(updateUser.id)
       if (rtoken.length > 0){
