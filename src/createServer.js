@@ -21,7 +21,7 @@ module.exports = async function createServer (){
   const app = new Koa();
   const logger = getLogger();
 	app.use(
-		koaCors()
+		koaCors({origin: true, credentials: true})
 	);
   app.use(async (ctx,next) => {
     const logger = getLogger();
