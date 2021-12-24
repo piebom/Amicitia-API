@@ -40,18 +40,8 @@ const updatePasswordByID = async (id, password) => {
     }
 })
 }
-const create = async ({
-  email,
-  username,
-  password,
-  token
-}) => {
-  return await prisma.user.create({data:
-    {
-      email: email,
-      username: username,
-      password: password,
-    }
+const create = async (data) => {
+  return await prisma.user.create({data:data
 })
 };
 

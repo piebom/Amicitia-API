@@ -33,4 +33,13 @@ describe("Activity", () => {
       })
     })
   })
+  describe("POST /api/activities", () => {
+    describe("Post activity", () => {
+      test("should respond with a 201 status", async () => {
+        const data = {"activity": "dit is een test", "type": "cooking", "participants": 1, "accessibility": 0.1}
+        const response = await request.post("/api/activities").send(data).auth(token, { type: 'bearer' })
+        expect(response.statusCode).toBe(201)
+      })
+    })
+  })
 })

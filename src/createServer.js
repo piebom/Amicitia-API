@@ -1,3 +1,5 @@
+import { PrismaClient } from ".prisma/client";
+const prisma = new PrismaClient();
 const Router = require('@koa/router');
 const Koa = require('koa');
 const koaCors = require('@koa/cors');
@@ -10,8 +12,10 @@ const CORS_MAX_AGE = 3 * 60 * 60;
 const LOG_LEVEL = 'silly';
 const LOG_DISABLED = false;
 const tokenAuthMiddleware = require("./middlewares/tokenAuth");
+
 const { emoji } = require('node-emoji');
 module.exports = async function createServer (){
+  
   initializeLogger({
 		level: LOG_LEVEL,
 		disabled: LOG_DISABLED,
@@ -57,13 +61,15 @@ module.exports = async function createServer (){
     start(){
       return new Promise((resolve) => {
         app.listen(process.env.PORT || 5000);
-        logger.info(`🚀 Server listening on http://localhost:3001`)
+        prisma.$connect();
+        logger.info(`🚀 Server started`)
         resolve()
       })
     },
     async stop(){
       app.removeAllListeners();
       logger.info('Goodbye');
+      prisma.$disconnect();
     }
   }
 }

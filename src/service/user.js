@@ -6,17 +6,14 @@ const debugLog = (message, meta = {}) => {
 	this.logger.debug(message, meta);
 };
 
-const register = ({
+const register = (
   email,
   username,
   password
-}) => {
-  debugLog('Creating a new user', { username });
-  return userRepository.create({
-    email,
-    username,
-    password
-  });
+) => {
+  debugLog('Creating a new user', { email,username,password });
+  const data = {email,username,password}
+  return userRepository.create(data);
 };
 
  const getAll = async () => {
@@ -27,11 +24,6 @@ const register = ({
 const getByEmail = async (email) => {
   debugLog(`Fetching user with email ${email}`);
   const user = await userRepository.findByEmail(email);
-
-  if (!user) {
-    throw new Error(`No user with email ${email} exists`, { email });
-  }
-
   return user;
 };
 const updateTokenByEmail = async (email, token) => {

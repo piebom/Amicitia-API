@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://5zf04oaq0kik:pscale_pw_9o5AHOZiyGgsbtLbQ4iL7I0uUgKI3juSJuRC8FUywF4@fbxco9m73fkp.eu-west-3.psdb.cloud/activityjournal?sslaccept=strict"
+  url = env("DATABASE_URL")
 }
 
 model activity {
