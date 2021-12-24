@@ -21,7 +21,7 @@ module.exports = async function createServer (){
   const app = new Koa();
   const logger = getLogger();
 	app.use(
-		koaCors({ origin : [ "https://activityjournal-api.herokuapp.com", "https://frontendweb-pieter-2122-pie-bomm-j4g8ernrl-piebomm.vercel.app/"]})
+		koaCors({ origin : [ "https://frontendweb-pieter-2122-pie-bomm-j4g8ernrl-piebomm.vercel.app/"]})
 	);
   app.use(async (ctx,next) => {
     const logger = getLogger();
