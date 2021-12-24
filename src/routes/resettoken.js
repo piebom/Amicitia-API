@@ -4,7 +4,7 @@ const router = require('koa-joi-router')
 const Joi = router.Joi;
 const nodemailer = require("nodemailer");
 const crypto = require("crypto")
-
+const bcrypt = require("bcrypt")
 const checkToken = async (ctx) => {
     const token = await resettokenService.findResetTokenByToken(ctx.request.body.token)
     if(token){

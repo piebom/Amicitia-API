@@ -40,7 +40,7 @@ const updateTokenByEmail = async (email, token) => {
 }
 const updatePasswordByID = async (id, password) => {
   debugLog(`Updating user password with id ${id}`, password);
-  return userRepository.updateTokenByEmail(id, password);
+  return userRepository.updatePasswordByID(id, password);
 }
 const getById = async (id) => {
   debugLog(`Fetching user with id ${id}`);
