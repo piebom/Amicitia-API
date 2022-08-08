@@ -4,7 +4,7 @@ module.exports = {
 		disabled: false,
 	},
 	cors: {
-		origins: ['http://localhost:3000'],
+		origins: ['https://agitated-meitner-a6099c.netlify.app'],
 		maxAge: 3 * 60 * 60,
 	},
 	database: {
