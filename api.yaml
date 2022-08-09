@@ -4,6 +4,7 @@ info:
   description: API voor het vak webservices
   version: 0.1.0
 servers:
+  - url: https://webserviceshogent.herokuapp.com/api/
   - url: http://localhost:9000/api
 tags:
   - name: User
