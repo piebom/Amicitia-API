@@ -10,6 +10,8 @@ tags:
     description: Everything about users
   - name: Post
     description: Everything about posts
+  - name: Comment
+    description: Everything about comments
 paths:
   /users:
     get:
@@ -135,6 +137,233 @@ paths:
       responses:
         '200':
           description: User Registered
+  /posts:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Returns a list of posts.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Post
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+    post:
+      summary: add a post
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePost'
+      responses:
+        '200':
+          description: Post posted
+  /posts/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Post ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Returns a specific post.
+      tags:
+        - Post
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+    put:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Post ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePost'
+      summary: Updates a specific post.
+      tags:
+        - Post
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string 
+    delete:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Post ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Deletes a specific post.
+      tags:
+        - Post
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string 
+
+
+
+
+
+  /comments:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Returns a list of comments.
+      description: Optional extended description in CommonMark or HTML.
+      tags:
+        - Comment
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+    post:
+      security:
+        - bearerAuth: []
+      summary: add a comment
+      tags:
+        - Comment
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        '200':
+          description: Comment posted
+  /comments/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Comment ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Returns a specific comment.
+      tags:
+        - Comment
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+    put:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Comment ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateComment'
+      summary: Updates a specific comment.
+      tags:
+        - Comment
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string 
+    delete:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Comment ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      summary: Deletes a specific comment.
+      tags:
+        - Comment
+      responses:
+        '200':    # status code
+          description: A JSON array of user object + token
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string 
+
+
 
 components:
   securitySchemes:
@@ -143,6 +372,46 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    CreateComment:
+      type: object
+      properties:
+        description:
+          type: string
+        author:
+          type: integer  
+      required:
+        - description
+        - author
+    UpdateComment:
+      type: object
+      properties:
+        description:
+          type: string
+      required:
+        - description
+    CreatePost:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        author:
+          type: integer  
+      required:
+        - title
+        - description
+        - author
+    UpdatePost:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - title
+        - description
     UpdateUser:
       type: object
       properties:
