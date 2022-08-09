@@ -13,11 +13,13 @@ const debugLog = (message, meta = {}) => {
 const makeExposedpost = ({
   postId,
   title,
-  description
+  description,
+  author,
 }) => ({
   postId,
   title,
-  description
+  description,
+  author
 });
 const create = async ({
   title,

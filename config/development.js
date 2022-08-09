@@ -23,8 +23,8 @@ module.exports = {
 	  },
 	  jwt: {
 		expirationInterval: 60 * 60 * 1000,
-		issuer: 'matti.deroos.be',
-		audience: 'matti.deroos.be',
+		issuer: 'pieter.bommele',
+		audience: 'pieter.bommele',
 	  }
   },
 };

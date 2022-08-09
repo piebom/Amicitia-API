@@ -11,9 +11,9 @@ module.exports = {
     client: 'mysql2',
     host: 'localhost',
     port: 3306,
-    name: 'kfcmoerbeketest',
+    name: 'webservicesTEST',
 	  username:'root',
-	  password:'root'
+	  password:'Kaas1212'
   },
 	pagination: {
     limit: 100,
@@ -27,10 +27,10 @@ module.exports = {
 		  memoryCost: 2 ** 17,
 	  },
 	  jwt: {
-		secret: 'eenveeltemoeilijksecretdatniemandooitzalradenandersisdesitegehacked',
+		secret: 'supercrazymoeilijkwachtwoorddatniemandraad',
 		expirationInterval: 60 * 60 * 1000,
-		issuer: 'matti.deroos.be',
-		audience: 'matti.deroos.be',
+		issuer: 'pieter.bommele',
+		audience: 'pieter.bommele',
 	  }
   },
 };
