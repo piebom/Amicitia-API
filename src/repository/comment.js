@@ -5,36 +5,32 @@ const findAll =  ({
     limit,
     offset,
   }) => {
-    return  getKnex()(tables.post)
+    return  getKnex()(tables.comment)
       .select()
       .limit(limit)
       .offset(offset);
   };
 
 
-const findByID = (postID) => {
-  return  getKnex()(tables.post)
-    .where(`${tables.post}.postID`, postID)
+const findByID = (commentID) => {
+  return  getKnex()(tables.comment)
+    .where(`${tables.comment}.commentID`, commentID)
     .first();
 };
 
 
-const updateByID = async (postID, {
-  naam,
-  voornaam ,
-  email,
+const updateByID = async (commentID, {
+  description
 }) => {
   try {
-    const id = await getKnex()(tables.post)
+    const id = await getKnex()(tables.comment)
       .update({
-        naam,
-        voornaam ,
-        email,
+        description,
       })
-      .where(`${tables.post}.postID`, postID);
+      .where(`${tables.comment}.commentID`, commentID);
     return await findByID(id);
   } catch (error) {
-    const logger = getChildLogger('post-repo');
+    const logger = getChildLogger('comment-repo');
     logger.error('Error in updateByID', {
       error,
     });
@@ -43,20 +39,20 @@ const updateByID = async (postID, {
 };
 
 const create = async ({
-  title,
   description,
   author,
+  post,
 }) => {
   try {
-    const id = await getKnex()(tables.post)
+    const id = await getKnex()(tables.comment)
       .insert({
-        title,
         description,
         author,
+        post,
       });
     return await findByID(id);
   } catch (error) {
-    const logger = getChildLogger('post-repo');
+    const logger = getChildLogger('comment-repo');
     logger.error('Error in create', {
       error,
     });
@@ -64,15 +60,15 @@ const create = async ({
   }
 };
 
-const deleteById = async (postID) => {
+const deleteById = async (commentID) => {
   try {
-    const rowsAffected = await getKnex()(tables.post)
+    const rowsAffected = await getKnex()(tables.comment)
       .delete()
-      .where('postID', postID);
+      .where('commentID', commentID);
 
     return rowsAffected > 0;
   } catch (error) {
-    const logger = getChildLogger('post-repo');
+    const logger = getChildLogger('comment-repo');
     logger.error('Error in deleteById', {
       error,
     });
@@ -81,7 +77,7 @@ const deleteById = async (postID) => {
 };
   
   const findCount = async () => {
-    const [count] = await getKnex()(tables.post)
+    const [count] = await getKnex()(tables.comment)
       .count();
     return count['count(*)'];
   };

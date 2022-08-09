@@ -16,9 +16,14 @@ exports.up = function(knex, Promise) {
     table.string('title').notNullable();
     table.string('description').notNullable();
     table.integer('author').unsigned().references('userId').inTable('User').onDelete('CASCADE');
-});
+}).createTable('Comment',function(table){
+    table.increments('commentId').primary();
+    table.string('description').notNullable();
+    table.integer('author').unsigned().references('userId').inTable('User').onDelete('CASCADE');
+    table.integer('post').unsigned().references('postId').inTable('Post').onDelete('CASCADE');
+})
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('Post').dropTable('User');
+  return knex.schema.dropTable("Comment").dropTable('Post').dropTable('User');
 };
