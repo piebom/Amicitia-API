@@ -23,12 +23,12 @@ const updateByID = async (commentID, {
   description
 }) => {
   try {
-    const id = await getKnex()(tables.comment)
+    await getKnex()(tables.comment)
       .update({
         description,
       })
       .where(`${tables.comment}.commentID`, commentID);
-    return await findByID(id);
+    return await findByID(commentID);
   } catch (error) {
     const logger = getChildLogger('comment-repo');
     logger.error('Error in updateByID', {

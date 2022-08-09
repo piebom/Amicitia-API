@@ -3,77 +3,74 @@ const { verifyPassword, hashPassword } = require('../core/password');
 const { generateJWT, verifyJWT } = require('../core/jwt');
 const Role = require('../core/roles');
 const ServiceError = require('../core/serviceError');
-const postRepository = require('../repository/post');
+const commentRepository = require('../repository/comment');
 
 const debugLog = (message, meta = {}) => {
-  if (!this.logger) this.logger = getChildLogger('post-service');
+  if (!this.logger) this.logger = getChildLogger('comment-service');
   this.logger.debug(message, meta);
 };
 
-const makeExposedpost = ({
-  postId,
-  title,
-  description
+const makeExposedcomment = ({
+  commentId,
+  description,
+  author,
 }) => ({
-  postId,
-  title,
-  description
+  commentId,
+  description,
+  author,
 });
 const create = async ({
-  title,
   description,
   author,
 }) => {
-  debugLog('Creating a new post', { title });
-  const post = await postRepository.create({
-    title,
+  debugLog('Creating a new comment', { description });
+  const comment = await commentRepository.create({
     description,
     author,
   });
 
-  return await makeExposedpost(post);
+  return await makeExposedcomment(comment);
 };
 
 const getAll = async (
   limit = 100,
   offset = 0,
 ) => {
-  debugLog('Fetching all posts', { limit, offset });
-  const data = await postRepository.findAll({ limit, offset });
-  const totalCount = await postRepository.findCount();
-  console.log(data)
+  debugLog('Fetching all comments', { limit, offset });
+  const data = await commentRepository.findAll({ limit, offset });
+  const totalCount = await commentRepository.findCount();
   return {
-    data: data.map(makeExposedpost),
+    data: data.map(makeExposedcomment),
     count: totalCount,
     limit,
     offset,
   };
 };
 
-const getById = async (postID) => {
-  debugLog(`Fetching post with postID ${postID}`);
-  const post = await postRepository.findByID(postID);
+const getById = async (commentID) => {
+  debugLog(`Fetching comment with commentID ${commentID}`);
+  const comment = await commentRepository.findByID(commentID);
 
-  if (!post) {
-    throw ServiceError.notFound(`No post with postID ${postID} exists`, { postID });
+  if (!comment) {
+    throw ServiceError.notFound(`No comment with commentID ${commentID} exists`, { commentID });
   }
 
-  return makeExposedpost(post);
+  return makeExposedcomment(comment);
 };
 
-const updateById = async (postID, { naam, voornaam, email }) => {
-  debugLog(`Updating post with postID ${postID}`, {naam, voornaam,email });
-  const post = await postRepository.updateByID(postID, {naam, voornaam, email });
-  return makeExposedpost(post);
+const updateById = async (commentID, { description }) => {
+  debugLog(`Updating comment with commentID ${commentID}`, {description });
+  const comment = await commentRepository.updateByID(commentID, {description });
+  return makeExposedcomment(comment);
 };
 
 
-const deleteById = async (postID) => {
-  debugLog(`Deleting post with postID ${postID}`);
-  const deleted = await postRepository.deleteById(postID);
+const deleteById = async (commentID) => {
+  debugLog(`Deleting comment with commentID ${commentID}`);
+  const deleted = await commentRepository.deleteById(commentID);
 
   if (!deleted) {
-    throw ServiceError.notFound(`No post with postID ${postID} exists`, { postID });
+    throw ServiceError.notFound(`No comment with commentID ${commentID} exists`, { commentID });
   }
 };
 
@@ -89,16 +86,16 @@ const checkAndParseSession = async (authHeader) => {
   const authToken = authHeader.substr(7);
   try {
     const {
-      roles, postId,
+      roles, commentId,
     } = await verifyJWT(authToken);
 
     return {
-      postId,
+      commentId,
       roles,
       authToken,
     };
   } catch (error) {
-    const logger = getChildLogger('post-service');
+    const logger = getChildLogger('comment-service');
     logger.error(error.message, { error });
     throw ServiceError.unauthorized(error.message);
   }

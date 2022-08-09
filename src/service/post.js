@@ -41,7 +41,6 @@ const getAll = async (
   debugLog('Fetching all posts', { limit, offset });
   const data = await postRepository.findAll({ limit, offset });
   const totalCount = await postRepository.findCount();
-  console.log(data)
   return {
     data: data.map(makeExposedpost),
     count: totalCount,
@@ -64,6 +63,7 @@ const getById = async (postID) => {
 const updateById = async (postID, { title, description}) => {
   debugLog(`Updating post with postID ${postID}`, {title, description });
   const post = await postRepository.updateByID(postID, {title, description });
+  
   return makeExposedpost(post);
 };
 

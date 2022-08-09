@@ -23,7 +23,8 @@ module.exports = {
       const amountComments = 1;
 
       // Create users
-      const createFakeUser = async () => ({
+      const createFakeUser = async (id) => ({
+        UserId: id,
         naam: faker.name.lastName(), 
         voornaam: faker.name.firstName(),
         email:faker.internet.email(),
@@ -32,27 +33,29 @@ module.exports = {
       })
       
       // Create posts
-      const createFakePost = async () => ({
+      const createFakePost = async (id) => ({
+        PostId: id,
         Title: faker.lorem.words(3), 
         Description:faker.lorem.sentences(1),
         Author: 1,
       })
 
       // Create comments
-      const createFakeComment = async () => ({
+      const createFakeComment = async (id) => ({
+        CommentId: id,
         Description: faker.lorem.sentences(1),
         Author: 1,
         Post: 1,
       })
 
       for (let i = 0; i < amountPosts; i++) {
-        fakePosts.push(await createFakePost())
+        fakePosts.push(await createFakePost(i+1))
       }
-      for (let i = 0; i < amountUsers; i++) {
-        fakeUsers.push(await createFakeUser())
+      for (let i = 1; i <= amountUsers; i++) {
+        fakeUsers.push(await createFakeUser(i+1))
       }
       for (let i = 0; i < amountComments; i++) {
-        fakeComments.push(await createFakeComment())
+        fakeComments.push(await createFakeComment(i+1))
       }
       knex('Comment').del()
       knex('Post').del()
@@ -62,7 +65,8 @@ module.exports = {
         return knex('user').insert(fakeUsers);
       }).then(function () {
         return knex('post').insert(fakePosts);
-      }).then(function () {
+      })
+      .then(function () {
         return knex('comment').insert(fakeComments);
       });
     },

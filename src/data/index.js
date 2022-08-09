@@ -137,7 +137,8 @@ function getKnex() {
 
 const tables = {
   post: 'post',
-  user: 'user'
+  user: 'user',
+  comment: "comment",
 };
 
 module.exports = {
