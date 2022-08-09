@@ -48,12 +48,11 @@ const updatepostById = async (ctx) => {
 };
 updatepostById.validationScheme = {
   params: {
-    postID: Joi.string().uuid(),
+    postID: Joi.number().integer().positive(),
   },
   body: {
-    naam: Joi.string().max(255),
-    voornaam: Joi.string().max(255),
-    email: Joi.string().email(),
+    title: Joi.string().max(255),
+    description: Joi.string().max(255),
   },
 };
 
@@ -63,7 +62,7 @@ const deletepostById = async (ctx) => {
 };
 deletepostById.validationScheme = {
   params: {
-    postID: Joi.string().uuid(),
+    postID: Joi.number().integer().positive(),
   },
 };
 

@@ -14,25 +14,21 @@ const findAll =  ({
 
 const findByID = (postID) => {
   return  getKnex()(tables.post)
-    .where(`${tables.post}.postID`, postID)
+    .where(`${tables.post}.postId`, postID)
     .first();
 };
 
 
 const updateByID = async (postID, {
-  naam,
-  voornaam ,
-  email,
+  title, description
 }) => {
   try {
-    const id = await getKnex()(tables.post)
+    await getKnex()(tables.post)
       .update({
-        naam,
-        voornaam ,
-        email,
+        title, description
       })
-      .where(`${tables.post}.postID`, postID);
-    return await findByID(id);
+      .where(`${tables.post}.postId`, postID);
+    return await findByID(postID);
   } catch (error) {
     const logger = getChildLogger('post-repo');
     logger.error('Error in updateByID', {

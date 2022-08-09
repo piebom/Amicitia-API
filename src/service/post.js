@@ -61,9 +61,9 @@ const getById = async (postID) => {
   return makeExposedpost(post);
 };
 
-const updateById = async (postID, { naam, voornaam, email }) => {
-  debugLog(`Updating post with postID ${postID}`, {naam, voornaam,email });
-  const post = await postRepository.updateByID(postID, {naam, voornaam, email });
+const updateById = async (postID, { title, description}) => {
+  debugLog(`Updating post with postID ${postID}`, {title, description });
+  const post = await postRepository.updateByID(postID, {title, description });
   return makeExposedpost(post);
 };
 

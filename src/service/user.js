@@ -99,6 +99,7 @@ const getById = async (userID) => {
 const updateById = async (userID, { naam, voornaam, email }) => {
   debugLog(`Updating user with userID ${userID}`, {naam, voornaam,email });
   const user = await userRepository.updateByID(userID, {naam, voornaam, email });
+  console.log(user);
   return makeExposedUser(user);
 };
 
