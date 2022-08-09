@@ -69,10 +69,9 @@ module.exports = function installCommentRouter(app) {
     prefix: '/comments',
   });
 
-  const requireAdmin = makeRequireRole(Role.ADMIN);
 
-  router.get('/', requireAuthentication, requireAdmin, validate(getAllcomments.validationScheme), getAllcomments);
-  router.post('/', validate(create.validationScheme), create);
+  router.get('/', requireAuthentication, validate(getAllcomments.validationScheme), getAllcomments);
+  router.post('/',requireAuthentication, validate(create.validationScheme), create);
   router.get('/:commentID', requireAuthentication, validate(getcommentById.validationScheme), getcommentById);
   router.put('/:commentID', requireAuthentication, validate(updatecommentById.validationScheme), updatecommentById);
   router.delete('/:commentID', requireAuthentication, validate(deletecommentById.validationScheme), deletecommentById);

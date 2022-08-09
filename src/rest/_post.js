@@ -71,10 +71,8 @@ module.exports = function installPostRouter(app) {
     prefix: '/posts',
   });
 
-  const requireAdmin = makeRequireRole(Role.ADMIN);
-
-  router.get('/', requireAuthentication, requireAdmin, validate(getAllposts.validationScheme), getAllposts);
-  router.post('/', validate(create.validationScheme), create);
+  router.get('/', requireAuthentication, validate(getAllposts.validationScheme), getAllposts);
+  router.post('/', requireAuthentication, validate(create.validationScheme), create);
   router.get('/:postID', requireAuthentication, validate(getpostById.validationScheme), getpostById);
   router.put('/:postID', requireAuthentication, validate(updatepostById.validationScheme), updatepostById);
   router.delete('/:postID', requireAuthentication, validate(deletepostById.validationScheme), deletepostById);
