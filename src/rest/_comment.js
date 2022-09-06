@@ -22,7 +22,7 @@ const getAllcomments = async (ctx) => {
     ctx.query.limit && Number(ctx.query.limit),
     ctx.query.offset && Number(ctx.query.offset),
   );
-  ctx.body = comments;
+  ctx.body = comments
 };
 getAllcomments.validationScheme = {
   query: Joi.object({
