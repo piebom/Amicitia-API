@@ -16,6 +16,8 @@ const makeExposedpost = ({
   Score,
   SpelerA,
   SpelerB,
+  SpelerAnaam,
+  SpelerBnaam,
   imageA,
   imageB,
   date,
@@ -25,6 +27,8 @@ const makeExposedpost = ({
   Score,
   SpelerA,
   SpelerB,
+  SpelerAnaam,
+  SpelerBnaam,
   imageA,
   imageB,
   date,
@@ -67,6 +71,16 @@ const getById = async (postID) => {
   debugLog(`Fetching post with postID ${postID}`);
   const post = await postRepository.findByID(postID);
 
+  if (!post) {
+    throw ServiceError.notFound(`No post with postID ${postID} exists`, { postID });
+  }
+
+  return makeExposedpost(post);
+};
+const getByPlayers = async (SpelerA, SpelerB) => {
+  debugLog(`Fetching post with postID ${SpelerA} + "vs" + ${SpelerB}`);
+  const post = await postRepository.findMatchByPlayers(SpelerA, SpelerB);
+  console.log(post)
   if (!post) {
     throw ServiceError.notFound(`No post with postID ${postID} exists`, { postID });
   }
@@ -129,6 +143,7 @@ const checkRole = (role, roles) => {
 module.exports = {
   getAll,
   getById,
+  getByPlayers,
   updateById,
   create,
   deleteById,

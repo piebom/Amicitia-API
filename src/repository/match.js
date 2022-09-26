@@ -15,11 +15,20 @@ const findAll =  ({
 const findByID = (matchID) => {
   console.log(matchID)
   return getKnex()(tables.match)
-  .select(getKnex().raw(`matchID, CourtType, Score, concat(a.voornaam,' ', a.naam) as SpelerA, concat(b.voornaam,' ', b.naam) as SpelerB, a.imageURL as imageA, b.imageURL as imageB, date`))
+  .select(getKnex().raw(`matchID, CourtType, Score,SpelerA,SpelerB,concat(a.voornaam,' ', a.naam) as SpelerAnaam, concat(b.voornaam,' ', b.naam) as SpelerBnaam, a.imageURL as imageA, b.imageURL as imageB, date`))
   .join(`${tables.user} as a`, 'SpelerA', '=', 'a.userId')
   .join(`${tables.user} as b`, 'SpelerB', '=', 'b.userId')
   .where(`${tables.match}.matchID`, matchID)
   .first();
+};
+
+const findMatchByPlayers = (SpelerA, SpelerB) => {
+  return getKnex()(tables.match)
+  .select(getKnex().raw(`matchID, CourtType, Score,SpelerA,SpelerB,concat(a.voornaam,' ', a.naam) as SpelerAnaam, concat(b.voornaam,' ', b.naam) as SpelerBnaam, a.imageURL as imageA, b.imageURL as imageB, date`))
+  .join(`${tables.user} as a`, 'SpelerA', '=', 'a.userId')
+  .join(`${tables.user} as b`, 'SpelerB', '=', 'b.userId')
+  .where(`${tables.match}.SpelerA`, SpelerA)
+  .andWhere(`${tables.match}.SpelerB`, SpelerB)
 };
 
 
@@ -92,6 +101,7 @@ const deleteById = async (matchID) => {
     findAll,
     findByID,
     updateByID,
+    findMatchByPlayers,
     create,
     deleteById,
     findCount,

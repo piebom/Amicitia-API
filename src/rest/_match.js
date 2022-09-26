@@ -44,6 +44,18 @@ getpostById.validationScheme = {
   },
 };
 
+const getMatchByPlayers = async (ctx) => {
+  const post = await postService.getByPlayers(ctx.params.SpelerA, ctx.params.SpelerB);
+  ctx.boxy = post;
+};
+getMatchByPlayers.validationScheme = {
+  params: {
+    SpelerA: Joi.number().integer(),
+    SpelerB: Joi.number().integer(),
+  },
+};
+
+
 const updatepostById = async (ctx) => {
   const post = await postService.updateById(ctx.params.postID, ctx.request.body);
   ctx.body = post;
@@ -76,6 +88,7 @@ module.exports = function installPostRouter(app) {
   router.get('/', validate(getAllposts.validationScheme), getAllposts);
   router.post('/', validate(create.validationScheme), create);
   router.get('/:postID', validate(getpostById.validationScheme), getpostById);
+  router.get('/byplayers/:SpelerA/:SpelerB', validate(getMatchByPlayers.validationScheme), getMatchByPlayers);
   router.put('/:postID', requireAuthentication, validate(updatepostById.validationScheme), updatepostById);
   router.delete('/:postID', requireAuthentication, validate(deletepostById.validationScheme), deletepostById);
 
