@@ -3,7 +3,7 @@ const { verifyPassword, hashPassword } = require('../core/password');
 const { generateJWT, verifyJWT } = require('../core/jwt');
 const Role = require('../core/roles');
 const ServiceError = require('../core/serviceError');
-const postRepository = require('../repository/post');
+const postRepository = require('../repository/match');
 
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getChildLogger('post-service');
@@ -11,26 +11,34 @@ const debugLog = (message, meta = {}) => {
 };
 
 const makeExposedpost = ({
-  postId,
-  title,
-  description,
-  author,
+  matchID,
+  CourtType,
+  Score,
+  SpelerA,
+  SpelerB,
+  date,
 }) => ({
-  postId,
-  title,
-  description,
-  author
+  matchID,
+  CourtType,
+  Score,
+  SpelerA,
+  SpelerB,
+  date,
 });
 const create = async ({
-  title,
-  description,
-  author,
+  CourtType,
+  Score,
+  SpelerA,
+  SpelerB,
+  date,
 }) => {
-  debugLog('Creating a new post', { title });
+  debugLog('Creating a new match', { SpelerA } + "vs" + { SpelerB });
   const post = await postRepository.create({
-    title,
-    description,
-    author,
+    CourtType,
+    Score,
+    SpelerA,
+    SpelerB,
+    date,
   });
 
   return await makeExposedpost(post);

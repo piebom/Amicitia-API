@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const Router = require('@koa/router');
-const postService = require('../service/post');
+const postService = require('../service/match');
 const Role = require('../core/roles');
 const { requireAuthentication, makeRequireRole } = require('../core/auth');
 
@@ -12,9 +12,11 @@ const create = async (ctx) => {
 };
 create.validationScheme = {
   body: {
-    title: Joi.string().max(255),
-    description: Joi.string().max(255),
-    author: Joi.number().integer().positive(),
+    CourtType: Joi.string().max(255),
+    Score: Joi.string().max(255),
+    SpelerA: Joi.number().integer().positive(),
+    SpelerB: Joi.number().integer().positive(),
+    date: Joi.date(),
   },
 };
 
@@ -38,7 +40,7 @@ const getpostById = async (ctx) => {
 };
 getpostById.validationScheme = {
   params: {
-    postID: Joi.number().integer().positive(),
+    postID: Joi.number().integer(),
   },
 };
 
@@ -68,12 +70,12 @@ deletepostById.validationScheme = {
 
 module.exports = function installPostRouter(app) {
   const router = new Router({
-    prefix: '/posts',
+    prefix: '/match',
   });
 
-  router.get('/', requireAuthentication, validate(getAllposts.validationScheme), getAllposts);
-  router.post('/', requireAuthentication, validate(create.validationScheme), create);
-  router.get('/:postID', requireAuthentication, validate(getpostById.validationScheme), getpostById);
+  router.get('/', validate(getAllposts.validationScheme), getAllposts);
+  router.post('/', validate(create.validationScheme), create);
+  router.get('/:postID', validate(getpostById.validationScheme), getpostById);
   router.put('/:postID', requireAuthentication, validate(updatepostById.validationScheme), updatepostById);
   router.delete('/:postID', requireAuthentication, validate(deletepostById.validationScheme), deletepostById);
 

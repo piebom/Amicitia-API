@@ -5,25 +5,19 @@ exports.up = function(knex, Promise) {
     table.string('naam');
     table.string('voornaam');
     table.string('email').notNullable();
-    table.string('password_hash')
-    .notNullable();
-    table.jsonb('roles')
-    .notNullable();
-    table.unique('email', 'idx_user_email_unique');
+    table.string('password_hash').notNullable();
+    table.jsonb('roles').notNullable();
     table.timestamps();
-}).createTable('Post',function(table){
-    table.increments('postId').primary();
-    table.string('title').notNullable();
-    table.string('description').notNullable();
-    table.integer('author').unsigned().references('userId').inTable('User').onDelete('CASCADE');
-}).createTable('Comment',function(table){
-    table.increments('commentId').primary();
-    table.string('description').notNullable();
-    table.integer('author').unsigned().references('userId').inTable('User').onDelete('CASCADE');
-    table.integer('post').unsigned().references('postId').inTable('Post').onDelete('CASCADE');
+}).createTable('Match',function(table){
+    table.increments('matchID').primary();
+    table.string('CourtType').notNullable();
+    table.jsonb("Score").notNullable();
+    table.integer('SpelerA').unsigned().references('userId').inTable('User').onDelete('CASCADE');
+    table.integer('SpelerB').unsigned().references('userId').inTable('User').onDelete('CASCADE');
+    table.date('date').notNullable();
 })
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable("Comment").dropTable('Post').dropTable('User');
+  return knex.schema.dropTable("Match").dropTable('User');
 };

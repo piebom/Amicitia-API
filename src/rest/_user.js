@@ -92,7 +92,7 @@ module.exports = function installUsersRoutes(app) {
 
   const requireAdmin = makeRequireRole(Role.ADMIN);
 
-  router.get('/', requireAuthentication, requireAdmin, validate(getAllUsers.validationScheme), getAllUsers);
+  router.get('/', validate(getAllUsers.validationScheme), getAllUsers);
   router.get('/:userID', requireAuthentication, validate(getUserById.validationScheme), getUserById);
   router.put('/:userID', requireAuthentication, validate(updateUserById.validationScheme), updateUserById);
   router.delete('/:userID', requireAuthentication, validate(deleteUserById.validationScheme), deleteUserById);
