@@ -29,6 +29,8 @@ const findMatchByPlayers = (SpelerA, SpelerB) => {
   .join(`${tables.user} as b`, 'SpelerB', '=', 'b.userId')
   .where(`${tables.match}.SpelerA`, SpelerA)
   .andWhere(`${tables.match}.SpelerB`, SpelerB)
+  .orWhere(`${tables.match}.SpelerA`, SpelerB)
+  .andWhere(`${tables.match}.SpelerB`, SpelerA)
 };
 
 

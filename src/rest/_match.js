@@ -45,8 +45,8 @@ getpostById.validationScheme = {
 };
 
 const getMatchByPlayers = async (ctx) => {
-  const post = await postService.getByPlayers(ctx.params.SpelerA, ctx.params.SpelerB);
-  ctx.boxy = post;
+  const post = await postService.getByPlayers(ctx.params.SpelerA, 2);
+  ctx.body = post;
 };
 getMatchByPlayers.validationScheme = {
   params: {
@@ -88,7 +88,7 @@ module.exports = function installPostRouter(app) {
   router.get('/', validate(getAllposts.validationScheme), getAllposts);
   router.post('/', validate(create.validationScheme), create);
   router.get('/:postID', validate(getpostById.validationScheme), getpostById);
-  router.get('/byplayers/:SpelerA/:SpelerB', validate(getMatchByPlayers.validationScheme), getMatchByPlayers);
+  router.get('/:SpelerB/:SpelerA', validate(getMatchByPlayers.validationScheme), getMatchByPlayers);
   router.put('/:postID', requireAuthentication, validate(updatepostById.validationScheme), updatepostById);
   router.delete('/:postID', requireAuthentication, validate(deletepostById.validationScheme), deletepostById);
 

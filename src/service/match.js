@@ -78,14 +78,12 @@ const getById = async (postID) => {
   return makeExposedpost(post);
 };
 const getByPlayers = async (SpelerA, SpelerB) => {
-  debugLog(`Fetching post with postID ${SpelerA} + "vs" + ${SpelerB}`);
+  debugLog(`Fetching post with postID ${SpelerA} vs ${SpelerB}`);
   const post = await postRepository.findMatchByPlayers(SpelerA, SpelerB);
-  console.log(post)
   if (!post) {
     throw ServiceError.notFound(`No post with postID ${postID} exists`, { postID });
   }
-
-  return makeExposedpost(post);
+  return post;
 };
 
 const updateById = async (postID, { title, description}) => {
