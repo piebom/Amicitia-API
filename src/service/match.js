@@ -16,6 +16,8 @@ const makeExposedpost = ({
   Score,
   SpelerA,
   SpelerB,
+  imageA,
+  imageB,
   date,
 }) => ({
   matchID,
@@ -23,6 +25,8 @@ const makeExposedpost = ({
   Score,
   SpelerA,
   SpelerB,
+  imageA,
+  imageB,
   date,
 });
 const create = async ({
