@@ -15,13 +15,15 @@ const makeExposedUser = ({
   naam,
   voornaam,
   email,
-  roles
+  roles,
+  imageURL
 }) => ({
   userId,
   naam,
   voornaam,
   email,
-  roles
+  roles,
+  imageURL
 });
 
 const makeLoginData = async (user) => {

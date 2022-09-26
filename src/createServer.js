@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const config = require("config")
+var serve = require('koa-static');
 const koaCors = require('@koa/cors');
 const bodyParser = require('koa-bodyparser');
 const emoji = require('node-emoji');
@@ -45,7 +46,7 @@ module.exports = async function createServer () {
       maxAge: CORS_MAX_AGE,
     }),
   );
-
+  app.use(serve('./public/images'));
   const logger = getLogger();
   app.use(ui(swaggerDocument, "/swagger"))
   app.use(bodyParser());

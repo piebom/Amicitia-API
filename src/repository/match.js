@@ -6,7 +6,7 @@ const findAll =  ({
     offset,
   }) => {
     return getKnex()(tables.match)
-    .select(getKnex().raw(`matchID, CourtType, Score, concat(a.voornaam,' ', a.naam) as SpelerA, concat(b.voornaam,' ', b.naam) as SpelerB`))
+    .select(getKnex().raw(`SELECT matchID, CourtType, Score, concat(a.voornaam,' ', a.naam) as SpelerA, concat(b.voornaam,' ', b.naam) as SpelerB, concat(a.imageURL) as imageURLA, concat(b.imageURL) as imageURLBB`))
     .join(`${tables.user} as a`, 'SpelerA', '=', 'a.userId')
     .join(`${tables.user} as b`, 'SpelerB', '=', 'b.userId')
   };

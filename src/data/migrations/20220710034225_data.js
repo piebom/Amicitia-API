@@ -7,6 +7,7 @@ exports.up = function(knex, Promise) {
     table.string('email').notNullable();
     table.string('password_hash').notNullable();
     table.jsonb('roles').notNullable();
+    table.string("imageURL").notNullable();
     table.timestamps();
 }).createTable('Match',function(table){
     table.increments('matchID').primary();
