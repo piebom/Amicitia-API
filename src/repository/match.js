@@ -14,9 +14,12 @@ const findAll =  ({
 
 const findByID = (matchID) => {
   console.log(matchID)
-  return  getKnex()(tables.match)
-    .where(`${tables.match}.matchID`, matchID)
-    .first();
+  return getKnex()(tables.match)
+  .select(getKnex().raw(`matchID, CourtType, Score, concat(a.voornaam,' ', a.naam) as SpelerA, concat(b.voornaam,' ', b.naam) as SpelerB, a.imageURL as imageA, b.imageURL as imageB, date`))
+  .join(`${tables.user} as a`, 'SpelerA', '=', 'a.userId')
+  .join(`${tables.user} as b`, 'SpelerB', '=', 'b.userId')
+  .where(`${tables.match}.matchID`, matchID)
+  .first();
 };
 
 
