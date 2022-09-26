@@ -45,7 +45,7 @@ getpostById.validationScheme = {
 };
 
 const getMatchByPlayers = async (ctx) => {
-  const post = await postService.getByPlayers(ctx.params.SpelerA, 2);
+  const post = await postService.getByPlayers(ctx.params.SpelerA, ctx.params.SpelerB);
   ctx.body = post;
 };
 getMatchByPlayers.validationScheme = {
