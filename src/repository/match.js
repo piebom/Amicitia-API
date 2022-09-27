@@ -23,6 +23,7 @@ const findByID = (matchID) => {
 };
 
 const findMatchByPlayers = (SpelerA, SpelerB) => {
+  if(SpelerA> 0){
   return getKnex()(tables.match)
   .select(getKnex().raw(`matchID, CourtType, Score,SpelerA,SpelerB,concat(a.voornaam,' ', a.naam) as SpelerAnaam, concat(b.voornaam,' ', b.naam) as SpelerBnaam, a.imageURL as imageA, b.imageURL as imageB, date`))
   .join(`${tables.user} as a`, 'SpelerA', '=', 'a.userId')
@@ -31,7 +32,17 @@ const findMatchByPlayers = (SpelerA, SpelerB) => {
   .andWhere(`${tables.match}.SpelerB`, SpelerB)
   .orWhere(`${tables.match}.SpelerA`, SpelerB)
   .andWhere(`${tables.match}.SpelerB`, SpelerA)
+  }
+  else{
+    return getKnex()(tables.match)
+    .select(getKnex().raw(`matchID, CourtType, Score,SpelerA,SpelerB,concat(a.voornaam,' ', a.naam) as SpelerAnaam, concat(b.voornaam,' ', b.naam) as SpelerBnaam, a.imageURL as imageA, b.imageURL as imageB, date`))
+    .join(`${tables.user} as a`, 'SpelerA', '=', 'a.userId')
+    .join(`${tables.user} as b`, 'SpelerB', '=', 'b.userId')
+    .where(`${tables.match}.SpelerA`, SpelerB)
+    .orWhere(`${tables.match}.SpelerB`, SpelerB)
+  }
 };
+
 
 
 const updateByID = async (matchID, {
