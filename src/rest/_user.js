@@ -6,6 +6,7 @@ const Role = require('../core/roles');
 const { requireAuthentication, makeRequireRole } = require('../core/auth');
 
 const validate = require('./_validation');
+const { findAll } = require('../repository/match');
 
 const login = async (ctx) => {
   const { email, password } = ctx.request.body;
@@ -34,8 +35,7 @@ register.validationScheme = {
 
 const getAllUsers = async (ctx) => {
   const users = await userService.getAll(
-    ctx.query.limit && Number(ctx.query.limit),
-    ctx.query.offset && Number(ctx.query.offset),
+    ctx.params.userID
   );
   ctx.body = users;
 };
@@ -93,7 +93,7 @@ module.exports = function installUsersRoutes(app) {
   const requireAdmin = makeRequireRole(Role.ADMIN);
 
   router.get('/', validate(getAllUsers.validationScheme), getAllUsers);
-  router.get('/:userID', requireAuthentication, validate(getUserById.validationScheme), getUserById);
+  router.get('/:userID', validate(getUserById.validationScheme), getAllUsers);
   router.put('/:userID', requireAuthentication, validate(updateUserById.validationScheme), updateUserById);
   router.delete('/:userID', requireAuthentication, validate(deleteUserById.validationScheme), deleteUserById);
 

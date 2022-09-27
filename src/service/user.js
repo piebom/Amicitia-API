@@ -73,17 +73,12 @@ const register = async ({
 
 
 const getAll = async (
-  limit = 100,
-  offset = 0,
+  userID,
 ) => {
-  debugLog('Fetching all users', { limit, offset });
-  const data = await userRepository.findAll({ limit, offset });
-  const totalCount = await userRepository.findCount();
+  debugLog('Fetching all users');
+  const data = await userRepository.findAll({ userID});
   return {
     data: data.map(makeExposedUser),
-    count: totalCount,
-    limit,
-    offset,
   };
 };
 

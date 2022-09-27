@@ -2,14 +2,12 @@ const uuid = require('uuid');
 const { tables, getKnex } = require('../data/index');
 const { getChildLogger } = require('../core/logging');
 
-const findAll =  ({
-    limit,
-    offset,
-  }) => {
+const findAll =  (
+    userID,
+  ) => {
     return  getKnex()(tables.user)
       .select()
-      .limit(limit)
-      .offset(offset);
+      .whereNot(`${tables.user}.userID`, userID.userID)
   };
 
 
