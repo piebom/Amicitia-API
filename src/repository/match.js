@@ -9,6 +9,7 @@ const findAll =  ({
     .select(getKnex().raw(`matchID, CourtType, Score, concat(a.voornaam,' ', a.naam) as SpelerA, concat(b.voornaam,' ', b.naam) as SpelerB, a.imageURL as imageA, b.imageURL as imageB, date`))
     .join(`${tables.user} as a`, 'SpelerA', '=', 'a.userId')
     .join(`${tables.user} as b`, 'SpelerB', '=', 'b.userId')
+    .orderBy('matchID', 'asc')
   };
 
 
