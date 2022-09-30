@@ -69,7 +69,8 @@ const create = async ({
   CourtType,
   Score,
   SpelerA,
-  SpelerB
+  SpelerB,
+  date
 }) => {
   try {
     const id = await getKnex()(tables.match)
@@ -77,7 +78,8 @@ const create = async ({
         CourtType,
         Score,
         SpelerA,
-        SpelerB
+        SpelerB,
+        date
       });
     return await findByID(id);
   } catch (error) {
