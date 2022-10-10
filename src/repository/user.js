@@ -63,6 +63,7 @@ const create = async ({
         email,
         password_hash: passwordHash,
         roles: JSON.stringify(roles),
+        imageURL: 'https://amicitiaapi.herokuapp.com/' + voornaam+naam+'.jpg',
       });
     return await findByID(userID);
   } catch (error) {
