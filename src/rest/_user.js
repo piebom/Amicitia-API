@@ -45,7 +45,7 @@ getAllUsers.validationScheme = {
 };
 
 const getUserById = async (ctx) => {
-  const user = await userService.getById(ctx.params.userID);
+  const user = await userService.getAll(ctx.params.userID);
   ctx.body = user;
 };
 getUserById.validationScheme = {
