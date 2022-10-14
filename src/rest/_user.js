@@ -34,15 +34,13 @@ register.validationScheme = {
 };
 
 const getAllUsers = async (ctx) => {
-  const users = await userService.getAll(
-    ctx.params.userID
-  );
+  const users = await userService.getAll(0);
   ctx.body = users;
 };
 getAllUsers.validationScheme = {
   query: Joi.object({
     limit: Joi.number().integer().positive().max(1000).optional(),
-    offset: Joi.number().integer().min(0).optional(),
+    offset: Joi.number().integer().optional(),
   }).and('limit', 'offset'),
 };
 
