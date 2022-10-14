@@ -5,10 +5,16 @@ const { getChildLogger } = require('../core/logging');
 const findAll =  (
     userID,
   ) => {
+    if(userID != 0){
     return  getKnex()(tables.user)
       .select()
       .whereNot(`${tables.user}.userID`, userID.userID)
-  };
+    }
+    else{
+      return  getKnex()(tables.user)
+      .select()
+    }
+    };
 
 
 const findByID = (userID) => {
